@@ -677,7 +677,7 @@ const Account = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {wishlistProducts.map((product) => (
-                  <div key={product.id} className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
+                  <div key={product.id || product.productId} className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/product/${product.id || product.productId}`)}>
                     <div className="flex items-start gap-4">
                       <img
                         src={product.thumbnail}
@@ -691,8 +691,8 @@ const Account = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              dispatch(addToCartAsync({ payload: { productId: product.id, quantity: 1 }, token }));
-                              dispatch(toggleWishlistAsync({ payload: { productId: product.id } }));
+                              dispatch(addToCartAsync({ payload: { productId: product.id || product.productId, quantity: 1 }, token }));
+                              dispatch(toggleWishlistAsync({ payload: { productId: product.id || product.productId } }));
                               showToaster('Moved to cart');
                             }}
                             className="mt-2 flex-1 bg-primary text-white text-xs py-1 px-2 rounded hover:bg-primary-dark"
@@ -702,7 +702,7 @@ const Account = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              dispatch(toggleWishlistAsync({ payload: { productId: product.id } }));
+                              dispatch(toggleWishlistAsync({ payload: { productId: product.id || product.productId } }));
                             }}
                             className="mt-2 text-red-500 hover:text-red-700 text-sm px-2"
                           >
