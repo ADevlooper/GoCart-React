@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectWishlistItems, toggleWishlistAsync, fetchWishlist } from '../redux/wishlistSlice';
-import { selectCart, selectOrderSummary, removeFromCart, updateQuantity } from '../redux/cartSlice';
+import { selectCart, selectOrderSummary, removeFromCart, updateQuantity, addToCartAsync } from '../redux/cartSlice';
 import { fetchOrders } from '../redux/orderSlice';
 import { API_BASE_URL } from '../config/api';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -28,7 +28,7 @@ const Account = () => {
   const [activeSection, setActiveSection] = useState(location.state?.activeSection || 'profile');
   const [isEditing, setIsEditing] = useState(false);
 
-  const { currentUser } = useSelector((state) => state.auth);
+  const { currentUser, token } = useSelector((state) => state.auth);
 
   const [profileData, setProfileData] = useState({
     name: '',
@@ -687,15 +687,28 @@ const Account = () => {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-sm mb-1 line-clamp-2">{product.title}</h3>
                         <p className="text-primary font-semibold text-sm">${product.price}</p>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            dispatch(toggleWishlistAsync({ payload: { productId: product.id } }));
-                          }}
-                          className="mt-2 text-red-500 hover:text-red-700 text-sm"
-                        >
-                          Remove
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              dispatch(addToCartAsync({ payload: { productId: product.id, quantity: 1 }, token }));
+                              dispatch(toggleWishlistAsync({ payload: { productId: product.id } }));
+                              showToaster('Moved to cart');
+                            }}
+                            className="mt-2 flex-1 bg-primary text-white text-xs py-1 px-2 rounded hover:bg-primary-dark"
+                          >
+                            Move to Cart
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              dispatch(toggleWishlistAsync({ payload: { productId: product.id } }));
+                            }}
+                            className="mt-2 text-red-500 hover:text-red-700 text-sm px-2"
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
