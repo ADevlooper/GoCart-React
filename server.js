@@ -16,14 +16,7 @@ const app = express();
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 import cookieParser from "cookie-parser";
 
-// // 404 handler for unknown routes (place at the very end, after all other routes)
-// app.all("*", (req, res) => {
-//   res.status(404).json({ success: false, message: "Route not found" });
-// });
 
-// import cors from "cors";
-
-// Allowlist for local development. Add any other local origins you use (e.g. Live Server at 127.0.0.1:5500)
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",

@@ -361,7 +361,7 @@ const Account = () => {
           </div>
 
           <div style="text-align: right; margin-top: 20px; padding-top: 20px; border-top: 2px solid #dc2626;">
-            <h3 style="color: #A6192E; margin: 0;">Total: $${order.total.toFixed(2)}</h3>
+            <h3 style="color: #A6192E; margin: 0;">Total: $${Number(order.totalAmount).toFixed(2)}</h3>
           </div>
 
           <div style="margin-top: 30px; text-align: center; color: #666; font-size: 12px;">
@@ -592,7 +592,7 @@ const Account = () => {
                       );
 
                     const now = new Date();
-                    const orderDate = new Date(order.date);
+                    const orderDate = new Date(order.createdAt);
                     const daysDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
 
                     let matchesFilter = true;
@@ -629,7 +629,7 @@ const Account = () => {
                           </div>
                           <div className="mb-2">
                             <span className="text-primary font-medium">Order Placed On:</span>
-                            <span className="text-gray-900 ml-1">{order.date}</span>
+                            <span className="text-gray-900 ml-1">{new Date(order.createdAt).toLocaleDateString()}</span>
                           </div>
                           <div>
                             {order.status === 'Processing' && (
@@ -1302,7 +1302,7 @@ const Account = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-700">Date</h3>
-                  <p className="text-gray-900">{selectedOrder.date}</p>
+                  <p className="text-gray-900">{new Date(selectedOrder.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-700">Status</h3>
@@ -1310,7 +1310,7 @@ const Account = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-700">Total</h3>
-                  <p className="text-red-800 font-bold">${selectedOrder.total.toFixed(2)}</p>
+                  <p className="text-red-800 font-bold">${Number(selectedOrder.totalAmount).toFixed(2)}</p>
                 </div>
               </div>
 

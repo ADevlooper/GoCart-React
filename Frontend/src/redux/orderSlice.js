@@ -17,8 +17,10 @@ const orderSlice = createSlice({
   initialState: { orders: [], status: 'idle' },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(createOrder.fulfilled, (state, action) => { if (action.payload) state.orders.unshift(action.payload); });
-    builder.addCase(fetchOrders.fulfilled, (state, action) => { state.orders = action.payload || []; });
+    builder.addCase(createOrder.fulfilled, (state, action) => {
+      // Do nothing, let fetchOrders populate the list 
+    });
+    builder.addCase(fetchOrders.fulfilled, (state, action) => { state.orders = action.payload?.data || []; });
   }
 });
 
