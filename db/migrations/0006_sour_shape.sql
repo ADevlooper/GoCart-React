@@ -1,0 +1,2 @@
+CREATE TYPE "public"."image_type" AS ENUM('thumbnail', 'preview', 'original');--> statement-breakpoint
+ALTER TABLE "product_images" ALTER COLUMN "type" SET DATA TYPE "public"."image_type" USING "type"::"public"."image_type";

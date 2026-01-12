@@ -1,0 +1,15 @@
+Summary of Changes for products.jsx
+
+This document outlines the fixes and improvements applied to the `products.jsx` React component.
+
+1. Replaced Deprecated `<marquee>` Tag:
+   - The `<marquee>` tag, used for scrolling long product titles, is deprecated and not recommended for modern web development.
+   - It has been replaced with a more modern and efficient solution using CSS animations (`@keyframes`).
+   - This change required adding a new `animate-scroll` class and corresponding `@keyframes` rule to the global stylesheet.
+
+2. Removed Unused `useSelector` Import:
+   - The `useSelector` hook was imported from `react-redux` but was not utilized within the component.
+   - Removing this unused import helps maintain code cleanliness and can slightly reduce the final bundle size.
+
+3. Improved Accessibility:
+   - Added an `aria-label="Toggle Wishlist"` to the wishlist button. This provides a clear description for screen reader users, making the interface more accessible.
