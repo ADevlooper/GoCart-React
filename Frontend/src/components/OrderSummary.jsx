@@ -2,8 +2,8 @@ import React from 'react';
 
 const OrderSummary = ({ cart, summary, voucherDiscount, selectedAddress, paymentMethod, isOrder = false, order }) => {
   const items = isOrder ? order.items : cart;
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const total = isOrder ? order.total : (subtotal + summary.shipping + summary.tax - summary.discount - voucherDiscount);
+  const subtotal = items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+  const total = isOrder ? (order.total || order.totalAmount) : (subtotal + summary.shipping + summary.tax - summary.discount - voucherDiscount);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">
@@ -44,7 +44,7 @@ const OrderSummary = ({ cart, summary, voucherDiscount, selectedAddress, payment
             </div>
             <div>
               <h3 className="font-semibold text-gray-700">Total</h3>
-              <p className="text-primary font-bold">${order.total.toFixed(2)}</p>
+              <p className="text-primary font-bold">${Number(order.total || order.totalAmount).toFixed(2)}</p>
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ const OrderSummary = ({ cart, summary, voucherDiscount, selectedAddress, payment
                     <div>
                       <h3 className="font-semibold text-sm break-words">{item.title}</h3>
                       {!isOrder && <p className="text-xs text-gray-500">{item.selectedColor || 'Default Color'}</p>}
-                      <p className="text-xs text-gray-600 sm:hidden">${item.price.toFixed(2)} per item</p>
+                      <p className="text-xs text-gray-600 sm:hidden">${Number(item.price).toFixed(2)} per item</p>
                     </div>
                   </div>
                 </td>
@@ -82,10 +82,10 @@ const OrderSummary = ({ cart, summary, voucherDiscount, selectedAddress, payment
                   <span className="px-2">{item.quantity}</span>
                 </td>
                 <td className="py-4 px-2">
-                  <span>${item.price.toFixed(2)}</span>
+                  <span>${Number(item.price).toFixed(2)}</span>
                 </td>
                 <td className="py-4 px-2 text-right">
-                  <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="font-semibold">${(Number(item.price) * item.quantity).toFixed(2)}</span>
                 </td>
               </tr>
             ))}
@@ -127,7 +127,7 @@ const OrderSummary = ({ cart, summary, voucherDiscount, selectedAddress, payment
           <div className="border-t pt-2">
             <div className="flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span>${order.total.toFixed(2)}</span>
+              <span>${Number(order.total || order.totalAmount).toFixed(2)}</span>
             </div>
           </div>
         )}

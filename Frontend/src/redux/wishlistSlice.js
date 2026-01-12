@@ -37,17 +37,23 @@ const wishlistSlice = createSlice({
       const data = action.payload.data || action.payload || [];
       state.items = Array.isArray(data) ? data : [];
     });
+
     builder.addCase(toggleWishlistAsync.fulfilled, (state, action) => {
       // Backend returns { success: true, action: "added"|"removed", ... }
       const { action: toggleAction } = action.payload;
       const originalArg = action.meta.arg.payload; // { productId: ... }
-      const productId = originalArg?.productId;
+      const productId = Number(originalArg?.productId); // Ensure number
 
-      if (toggleAction === 'removed' && productId) {
-        state.items = state.items.filter(item => (item.productId || item.product_id || item.id) !== productId);
-      } else if (toggleAction === 'added' && productId) {
-        // Check if already exists to avoid duplicates
-        const exists = state.items.some(item => (item.productId || item.product_id || item.id) === productId);
+      if (toggleAction === 'removed') {
+        state.items = state.items.filter(item => {
+          const itemId = item.productId || item.product_id || item.id;
+          return Number(itemId) !== productId;
+        });
+      } else if (toggleAction === 'added') {
+        const exists = state.items.some(item => {
+          const itemId = item.productId || item.product_id || item.id;
+          return Number(itemId) === productId;
+        });
         if (!exists) {
           state.items.push({ productId: productId });
         }

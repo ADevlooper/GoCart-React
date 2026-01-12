@@ -25,8 +25,6 @@ const allowedOrigins = [
   "http://localhost:5500",
 ];
 
-// For development convenience allow any origin but keep credentials enabled
-// Strict CORS for credentials
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,

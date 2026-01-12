@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectWishlistItems, toggleWishlist, fetchWishlist } from '../redux/wishlistSlice';
+import { selectWishlistItems, toggleWishlistAsync, fetchWishlist } from '../redux/wishlistSlice';
 import { selectCart, selectOrderSummary, removeFromCart, updateQuantity } from '../redux/cartSlice';
 import { fetchOrders } from '../redux/orderSlice';
 import { API_BASE_URL } from '../config/api';
@@ -332,7 +332,7 @@ const Account = () => {
           <div style="margin-bottom: 20px;">
             <h2 style="color: #333; margin-bottom: 10px;">Order Details</h2>
             <p><strong>Order ID:</strong> ${order.id}</p>
-            <p><strong>Date:</strong> ${order.date}</p>
+            <p><strong>Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}</p>
             <p><strong>Status:</strong> ${order.status}</p>
           </div>
 
@@ -352,8 +352,8 @@ const Account = () => {
                   <tr>
                     <td style="border: 1px solid #ddd; padding: 8px;">${item.title}</td>
                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${item.quantity}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">$${item.price.toFixed(2)}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">$${(item.price * item.quantity).toFixed(2)}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">$${Number(item.price).toFixed(2)}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">$${(Number(item.price) * item.quantity).toFixed(2)}</td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -690,7 +690,7 @@ const Account = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            dispatch(toggleWishlist(product.id));
+                            dispatch(toggleWishlistAsync({ payload: { productId: product.id } }));
                           }}
                           className="mt-2 text-red-500 hover:text-red-700 text-sm"
                         >
@@ -701,8 +701,9 @@ const Account = () => {
                   </div>
                 ))}
               </div>
-            )}
-          </div>
+            )
+            }
+          </div >
         );
       case 'cart':
         return (
@@ -1329,8 +1330,8 @@ const Account = () => {
                         <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-red-800">${(item.price * item.quantity).toFixed(2)}</p>
-                        <p className="text-sm text-gray-600">${item.price.toFixed(2)} each</p>
+                        <p className="font-semibold text-red-800">${(Number(item.price) * item.quantity).toFixed(2)}</p>
+                        <p className="text-sm text-gray-600">${Number(item.price).toFixed(2)} each</p>
                       </div>
                     </div>
                   ))}
