@@ -186,7 +186,8 @@ export const orders = pgTable("orders", {
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
 
   paymentMethod: varchar("payment_method", { length: 50 }).notNull(), // card/paypal/upi/cod
-  status: varchar("status", { length: 50 }).default("pending"), // pending, completed, cancelled
+  paymentStatus: varchar("payment_status", { length: 50 }).default("pending"), // pending, paid, failed
+  status: varchar("status", { length: 50 }).default("pending"), // pending, processing, shipped, delivered, cancelled
 
   shippingInfo: json("shipping_info").notNull(), // name, email, address, city, zip
 

@@ -4,6 +4,7 @@ import { eq, and } from "drizzle-orm";
 
 // CREATE ORDER
 // CREATE ORDER
+// CREATE ORDER
 export const createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -11,14 +12,13 @@ export const createOrder = async (req, res) => {
 
     console.log("=== ORDER CREATION REQUEST ===");
     console.log("User ID:", userId);
-    // console.log("Received body:", req.body);
 
-    // Better validation - check for undefined/null instead of falsy
+    // Validate main fields
     const missingFields = [];
-    if (subtotal === undefined || subtotal === null) missingFields.push("subtotal");
-    if (tax === undefined || tax === null) missingFields.push("tax");
-    if (shipping === undefined || shipping === null) missingFields.push("shipping");
-    if (totalAmount === undefined || totalAmount === null) missingFields.push("totalAmount");
+    if (subtotal === undefined) missingFields.push("subtotal");
+    if (tax === undefined) missingFields.push("tax");
+    if (shipping === undefined) missingFields.push("shipping");
+    if (totalAmount === undefined) missingFields.push("totalAmount");
     if (!shippingInfo) missingFields.push("shippingInfo");
     if (!paymentMethod) missingFields.push("paymentMethod");
 
@@ -31,8 +31,7 @@ export const createOrder = async (req, res) => {
 
     // Start Transaction
     const orderId = await db.transaction(async (tx) => {
-      // 1. Get current cart items within transaction
-      // 1. Get filtered cart items for this user (where cart status is active)
+      // 1. Get filtered cart items from ACTIVE cart
       const usersCartItems = await tx
         .select({
           productId: cartItems.productId,
@@ -48,14 +47,10 @@ export const createOrder = async (req, res) => {
         .where(and(eq(carts.userId, userId), eq(carts.status, "active")));
 
       if (!usersCartItems.length) {
-        throw new Error("Cart is empty");
+        throw new Error("Cart is empty or no active cart found");
       }
 
-      if (!cartItems.length) {
-        throw new Error("Cart is empty");
-      }
-
-      // 2. Insert into orders table
+      // 2. Insert into orders table with paymentStatus
       const [newOrder] = await tx
         .insert(orders)
         .values({
@@ -66,6 +61,7 @@ export const createOrder = async (req, res) => {
           totalAmount: Number(totalAmount),
           paymentMethod,
           status: "pending",
+          paymentStatus: "pending", // Default to pending
           shippingInfo: JSON.stringify(shippingInfo),
         })
         .returning();
@@ -86,15 +82,11 @@ export const createOrder = async (req, res) => {
         );
       }
 
-      // 4. Update cart status to 'ordered' (or delete items if preferred)
-      // Strategy: Mark cart as ordered so we keep history, or just clear items?
-      // Given "remake cart completely", let's clear items to keep it simple and consistent with "active" cart logic.
-      // actually, if we mark as ordered, we need to create a new active cart next time.
-      // Let's delete items for now to keep the "active" cart empty.
-      // await tx.delete(cartItems).where(eq(cartItems.cartId, usersCartItems[0].cartId));
-
-      // ALTERNATIVE: Mark cart as "ordered" and the controller will create a new one next time.
-      await tx.update(carts).set({ status: "ordered" }).where(eq(carts.id, usersCartItems[0].cartId));
+      // 4. Update cart status to 'ordered'
+      // This effectively "clears" the active cart for the user
+      await tx.update(carts)
+        .set({ status: "ordered", updatedAt: new Date() })
+        .where(eq(carts.id, usersCartItems[0].cartId));
 
       return newOrder.id;
     });
@@ -106,8 +98,9 @@ export const createOrder = async (req, res) => {
     });
   } catch (err) {
     console.error("Create Order Error:", err);
-    const message = err.message === "Cart is empty" ? "Cart is empty" : "Failed to create order";
-    res.status(err.message === "Cart is empty" ? 400 : 500).json({ success: false, message });
+    // return proper error message to frontend
+    res.status(err.message.includes("Cart is empty") ? 400 : 500)
+      .json({ success: false, message: err.message || "Failed to create order" });
   }
 };
 

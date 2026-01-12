@@ -74,7 +74,7 @@ function Payment() {
     const shippingInfo = {
       name: selectedAddress?.name || 'Guest',
       email: selectedAddress?.email || '',
-      address: selectedAddress?.address || '',
+      address: selectedAddress?.street || selectedAddress?.address || '',
       city: selectedAddress?.city || '',
       zip: selectedAddress?.zip || selectedAddress?.zipCode || '',
       phone: selectedAddress?.phone || '',
@@ -87,8 +87,14 @@ function Payment() {
       shipping,
       totalAmount,
       paymentMethod: paymentMethod || 'card',
-      shippingInfo,
+      shippingInfo, // Ensure this is an object, backend will stringify if needed or handle it
     };
+
+    // Validating payload before dispatch
+    if (!orderPayload.shippingInfo.address || !orderPayload.shippingInfo.city) {
+      alert("Please select a valid address with all details.");
+      return;
+    }
 
     dispatch(createOrder({ payload: orderPayload }))
       .then((result) => {
@@ -99,9 +105,9 @@ function Payment() {
             navigate('/account', { state: { activeSection: 'orders' } });
           }, 3000);
         } else {
-          // This handles the rejected case from the thunk if usage conforms to RTK patterns
-          // But createAsyncThunk with errors usually lands in rejected or payload is error
-          alert(result.error?.message || 'Failed to place order. Please try again.');
+          // This handles the rejected case from the thunk
+          const errorMsg = result.payload?.message || result.error?.message || 'Failed to place order.';
+          alert(errorMsg);
         }
       })
       .catch((err) => {
