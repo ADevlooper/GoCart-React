@@ -141,25 +141,33 @@ export const wishlist = pgTable("wishlist", {
 // =========================
 // CART TABLE (linked to users)
 // =========================
-export const cart = pgTable("cart", {
+// =========================
+// CARTS TABLE (Session/Cart)
+// =========================
+export const carts = pgTable("carts", {
   id: serial("id").primaryKey(),
-
   userId: integer("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  status: varchar("status", { length: 50 }).default("active"), // active, ordered, abandoned
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
 
+// =========================
+// CART ITEMS TABLE
+// =========================
+export const cartItems = pgTable("cart_items", {
+  id: serial("id").primaryKey(),
+  cartId: integer("cart_id")
+    .notNull()
+    .references(() => carts.id, { onDelete: "cascade" }),
   productId: integer("product_id")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
-
   quantity: integer("quantity").default(1),
-
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-}, (table) => {
-  return {
-    userProductUnique: uniqueIndex("cart_user_product_unique").on(table.userId, table.productId),
-  };
 });
 
 // =========================

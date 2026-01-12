@@ -69,7 +69,7 @@ function Cart() {
                       onClick={() => handleRemoveItem(item)}
                     />
                     <img
-                      src={item.images?.[0]?.thumbnail ? `${API_BASE_URL.replace('/api', '')}${item.images[0].thumbnail}` : (item.images?.[0]?.preview ? `${API_BASE_URL.replace('/api', '')}${item.images[0].preview}` : (item.thumbnail ? (item.thumbnail.startsWith('http') ? item.thumbnail : `${API_BASE_URL.replace('/api', '')}${item.thumbnail}`) : 'https://via.placeholder.com/80x80?text=No+Image'))}
+                      src={item.thumbnail ? (item.thumbnail.startsWith('http') ? item.thumbnail : `${API_BASE_URL.replace('/api', '')}${item.thumbnail}`) : 'https://via.placeholder.com/80x80?text=No+Image'}
                       alt={item.name}
                       className="w-16 h-25 object-cover rounded flex-shrink-0"
                       onError={(e) => { e.target.src = 'https://via.placeholder.com/80x80?text=No+Image'; }}

@@ -1,6 +1,6 @@
 import { db } from "../db/index.js";
-import { orders, orderItems, products, cart } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { orders, orderItems, products, carts, cartItems } from "../db/schema.js";
+import { eq, and } from "drizzle-orm";
 
 // CREATE ORDER
 // CREATE ORDER
@@ -32,17 +32,24 @@ export const createOrder = async (req, res) => {
     // Start Transaction
     const orderId = await db.transaction(async (tx) => {
       // 1. Get current cart items within transaction
-      const cartItems = await tx
+      // 1. Get filtered cart items for this user (where cart status is active)
+      const usersCartItems = await tx
         .select({
-          productId: cart.productId,
-          quantity: cart.quantity,
+          productId: cartItems.productId,
+          quantity: cartItems.quantity,
           title: products.title,
           price: products.price,
           discount: products.discount,
+          cartId: carts.id,
         })
-        .from(cart)
-        .leftJoin(products, eq(cart.productId, products.id))
-        .where(eq(cart.userId, userId));
+        .from(cartItems)
+        .innerJoin(carts, eq(cartItems.cartId, carts.id))
+        .leftJoin(products, eq(cartItems.productId, products.id))
+        .where(and(eq(carts.userId, userId), eq(carts.status, "active")));
+
+      if (!usersCartItems.length) {
+        throw new Error("Cart is empty");
+      }
 
       if (!cartItems.length) {
         throw new Error("Cart is empty");
@@ -66,9 +73,9 @@ export const createOrder = async (req, res) => {
       if (!newOrder) throw new Error("Failed to create order");
 
       // 3. Insert into orderItems table (Batch Insert)
-      if (cartItems.length > 0) {
+      if (usersCartItems.length > 0) {
         await tx.insert(orderItems).values(
-          cartItems.map((item) => ({
+          usersCartItems.map((item) => ({
             orderId: newOrder.id,
             productId: item.productId,
             title: item.title,
@@ -79,8 +86,15 @@ export const createOrder = async (req, res) => {
         );
       }
 
-      // 4. Clear the user's cart
-      await tx.delete(cart).where(eq(cart.userId, userId));
+      // 4. Update cart status to 'ordered' (or delete items if preferred)
+      // Strategy: Mark cart as ordered so we keep history, or just clear items?
+      // Given "remake cart completely", let's clear items to keep it simple and consistent with "active" cart logic.
+      // actually, if we mark as ordered, we need to create a new active cart next time.
+      // Let's delete items for now to keep the "active" cart empty.
+      // await tx.delete(cartItems).where(eq(cartItems.cartId, usersCartItems[0].cartId));
+
+      // ALTERNATIVE: Mark cart as "ordered" and the controller will create a new one next time.
+      await tx.update(carts).set({ status: "ordered" }).where(eq(carts.id, usersCartItems[0].cartId));
 
       return newOrder.id;
     });
