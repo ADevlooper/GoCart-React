@@ -10,10 +10,10 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
         return <Navigate to="/auth" replace />;
     }
 
-    // Requires admin but user is not admin
-    if (requireAdmin && user.role !== 'admin') {
-        return <Navigate to="/products" replace />;
-    }
+    // Requires admin but user is not admin - bypassed as requested
+    // if (requireAdmin && user.role !== 'admin') {
+    //     return <Navigate to="/products" replace />;
+    // }
 
     return children;
 };

@@ -32,7 +32,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// Simple global preflight responder (avoid path-to-regexp issues for '*')
+
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();

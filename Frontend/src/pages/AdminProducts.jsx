@@ -572,6 +572,7 @@ const AdminProducts = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
@@ -581,6 +582,25 @@ const AdminProducts = () => {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {filteredProducts.map((product) => (
                             <tr key={product.id}>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <img
+                                        src={(() => {
+                                            if (!product.images || product.images.length === 0) return 'https://via.placeholder.com/40';
+                                            const img = product.images[0];
+                                            const url = img.thumbnail || img.preview || img.original || (typeof img === 'string' ? img : null);
+                                            if (!url) return 'https://via.placeholder.com/40';
+                                            if (url.startsWith('http')) return url;
+                                            // Ensure correct base URL concatenation
+                                            const baseUrl = API_BASE_URL.replace('/api', '');
+                                            // Avoid double slash
+                                            const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+                                            return `${baseUrl}${cleanUrl}`;
+                                        })()}
+                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/40'; }}
+                                        alt={product.title}
+                                        className="w-10 h-10 object-cover rounded-full border border-gray-200 shadow-sm"
+                                    />
+                                </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm font-medium text-gray-900">{product.title}</div>
                                 </td>
