@@ -176,11 +176,17 @@ function ProductDetail() {
                 const baseUrl = API_BASE_URL.replace('/api', '');
                 if (preview) return `${baseUrl}${preview}`;
                 if (original) return `${baseUrl}${original}`;
-                return 'https://via.placeholder.com/300x300?text=No+Image';
+                return `data:image/svg+xml;utf8,${encodeURIComponent(
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
+                )}`;
               })()}
               alt={product.title}
               className="w-full h-[300px] object-contain mx-auto"
-              onError={(e) => { e.target.src = 'https://via.placeholder.com/300x300?text=No+Image'; }}
+              onError={(e) => {
+                e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
+                )}`;
+              }}
             />
 
             {/* Wishlist Button */}
@@ -257,11 +263,17 @@ function ProductDetail() {
                       const baseUrl = API_BASE_URL.replace('/api', '');
                       if (thumb) return `${baseUrl}${thumb}`;
                       if (preview) return `${baseUrl}${preview}`;
-                      return 'https://via.placeholder.com/80x80?text=No+Image';
+                      return `data:image/svg+xml;utf8,${encodeURIComponent(
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="10">No Image</text></svg>'
+                      )}`;
                     })()}
                     alt={`${product.title} ${index + 1}`}
                     className="w-full h-full object-cover"
-                    onError={(e) => { e.target.src = 'https://via.placeholder.com/80x80?text=No+Image'; }}
+                    onError={(e) => {
+                      e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="10">No Image</text></svg>'
+                      )}`;
+                    }}
                   />
                 </button>
               ))}
@@ -467,11 +479,17 @@ function ProductDetail() {
                         const baseUrl = API_BASE_URL.replace('/api', '');
                         if (preview) return `${baseUrl}${preview}`;
                         if (original) return `${baseUrl}${original}`;
-                        return 'https://via.placeholder.com/300x300?text=No+Image';
+                        return `data:image/svg+xml;utf8,${encodeURIComponent(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
+                        )}`;
                       })()}
                       alt={relatedProduct.title}
                       className="max-w-full max-h-full object-contain"
-                      onError={(e) => { e.target.src = 'https://via.placeholder.com/300x300?text=No+Image'; }}
+                      onError={(e) => {
+                        e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
+                        )}`;
+                      }}
                     />
 
                     {/* Offer Tag */}
