@@ -241,7 +241,8 @@ const AdminProducts = () => {
                 showToaster('Product deleted successfully');
                 loadProducts();
             } else {
-                showToaster('Failed to delete product');
+                const data = await res.json();
+                showToaster(data.message || 'Failed to delete product');
             }
         } catch (error) {
             showToaster('Error deleting product');

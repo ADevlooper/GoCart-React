@@ -429,6 +429,7 @@ import {
   productImages,
   categories,
   tags,
+  wishlist,
 } from "../db/schema.js";
 import { eq, inArray } from "drizzle-orm";
 
