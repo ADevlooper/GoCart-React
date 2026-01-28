@@ -3,8 +3,7 @@ import { db } from "../db/index.js";
 import { carts, cartItems, products, productImages } from "../db/schema.js";
 import { eq, and } from "drizzle-orm";
 
-// Helper function to get enriched cart items
-// Helper function to get enriched cart items
+
 const getEnrichedCart = async (userId) => {
   // 1. Find active cart
   const [activeCart] = await db
@@ -61,9 +60,7 @@ export const getCartItems = async (req, res) => {
 // ==============================
 // ADD TO CART
 // ==============================
-// ==============================
-// ADD TO CART
-// ==============================
+
 import { sql } from "drizzle-orm";
 
 export const addToCart = async (req, res) => {
