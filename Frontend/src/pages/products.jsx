@@ -147,11 +147,11 @@ function Products() {
   const isInWishlist = (productId) => wishlistIds.includes(productId);
 
   return (
-    <div className="container mx-auto px-8 py-8">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <h1 className="text-4xl font-bold">Our Products</h1>
+    <div className="container mx-auto px-4 py-6 md:px-8 md:py-8">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-8 gap-4">
+        <h1 className="text-2xl md:text-4xl font-bold text-center md:text-left">Our Products</h1>
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-          <div className="flex gap-4">
+          <div className="flex gap-4 justify-between md:justify-start">
             <Filters selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} categories={categories} />
             <Shortlist sortBy={sortBy} setSortBy={setSortBy} />
           </div>
@@ -160,11 +160,11 @@ function Products() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full mx-auto">
-            <Link to={`/product/${product.id}`} className="block relative">
-              <div className="h-64 bg-gray-200 flex items-center justify-center">
+          <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full mx-auto flex flex-col h-full">
+            <Link to={`/product/${product.id}`} className="block relative grow">
+              <div className="h-48 sm:h-56 md:h-64 bg-gray-200 flex items-center justify-center">
                 <img
                   src={(() => {
                     const img = product.images?.[0];
@@ -173,8 +173,8 @@ function Products() {
                     const baseUrl = API_BASE_URL.replace('/api', '');
                     if (preview) return `${baseUrl}${preview}`;
                     if (original) return `${baseUrl}${original}`;
-                    return `${baseUrl}${product.images?.[0]?.original}`.includes('undefined') ? 'https://via.placeholder.com/300x300?text=No+Image' : `${baseUrl}${original}`; // Double check logic
-                  })() === 'undefined' ? 'https://via.placeholder.com/300x300?text=No+Image' : // Simplify:
+                    return `${baseUrl}${product.images?.[0]?.original}`.includes('undefined') ? 'https://via.placeholder.com/300x300?text=No+Image' : `${baseUrl}${original}`;
+                  })() === 'undefined' ? 'https://via.placeholder.com/300x300?text=No+Image' :
                     (() => {
                       const img = product.images?.[0];
                       const preview = img?.preview;
@@ -185,7 +185,7 @@ function Products() {
                       return 'https://via.placeholder.com/300x300?text=No+Image';
                     })()}
                   alt={product.name}
-                  className="max-w-full max-h-full object-contain"
+                  className="w-full h-full object-contain p-4"
                   onError={(e) => {
                     e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
                       '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
@@ -194,7 +194,7 @@ function Products() {
                 />
 
                 {product.discount >= 5 && (
-                  <span className="absolute top-2 left-2 bg-red-100 text-primary text-sm font-medium px-3 py-1 rounded">
+                  <span className="absolute top-2 left-2 bg-red-100 text-primary text-xs md:text-sm font-medium px-2 py-1 rounded">
                     {Math.floor(product.discount)}% OFF
                   </span>
                 )}
@@ -202,10 +202,10 @@ function Products() {
                 <button
                   onClick={(e) => handleToggleWishlist(e, product.id)}
                   aria-label="Toggle Wishlist"
-                  className="absolute top-2 right-2 p-2 bg-white bg-opacity-80 rounded-full shadow-md hover:bg-opacity-100 transition-all duration-200"
+                  className="absolute top-2 right-2 p-1.5 md:p-2 bg-white bg-opacity-80 rounded-full shadow-md hover:bg-opacity-100 transition-all duration-200"
                 >
                   <svg
-                    className={`w-5 h-5 ${isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'}`}
+                    className={`w-4 h-4 md:w-5 md:h-5 ${isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -220,24 +220,24 @@ function Products() {
                 </button>
               </div>
 
-              <div className="p-4">
+              <div className="p-3 md:p-4">
                 <ScrollingTitle title={product.name} />
-                <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
+                <p className="text-gray-600 mb-2 md:mb-4 line-clamp-2 text-sm md:text-base">{product.description}</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-lg font-bold text-primary">
+                  <span className="text-base md:text-lg font-bold text-primary">
                     ${product.price}
                   </span>
-                  <span className="text-sm text-gray-500 line-through">
+                  <span className="text-xs md:text-sm text-gray-500 line-through">
                     ${Math.round(product.price * (1 + Math.floor(product.discount) / 100))}
                   </span>
                 </div>
               </div>
             </Link>
 
-            <div className="p-4 pt-0 flex gap-2">
+            <div className="p-3 md:p-4 pt-0 flex gap-2 flex-col sm:flex-row mt-auto">
               <button
                 onClick={(e) => handleBuyNow(e, product)}
-                className="flex-1 border-2 border-primary text-primary px-2 py-2 rounded-md hover:bg-primary hover:text-white transition-colors text-center flex items-center justify-center gap-1 text-sm whitespace-nowrap"
+                className="flex-1 border-2 border-primary text-primary px-3 py-2 rounded-md hover:bg-primary hover:text-white transition-colors text-center flex items-center justify-center gap-1 text-sm font-medium"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -246,7 +246,7 @@ function Products() {
               </button>
               <button
                 onClick={(e) => handleAddToCart(e, product)}
-                className="flex-1 bg-primary text-white px-2 py-2 rounded-md hover:bg-primary-dark transition-colors flex items-center justify-center gap-1 text-sm whitespace-nowrap"
+                className="flex-1 bg-primary text-white px-3 py-2 rounded-md hover:bg-primary-dark transition-colors flex items-center justify-center gap-1 text-sm font-medium"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

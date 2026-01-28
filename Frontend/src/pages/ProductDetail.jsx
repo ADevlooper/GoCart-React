@@ -155,16 +155,16 @@ function ProductDetail() {
   }
 
   return (
-    <div className="container mx-auto px-8 py-8">
+    <div className="container mx-auto px-4 py-6 md:px-8 md:py-8">
       {/* Back button */}
-      <Link to="/products" className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-all duration-300 mb-8 group">
-        <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <Link to="/products" className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-all duration-300 mb-4 md:mb-8 group text-sm md:text-base">
+        <svg className="w-4 h-4 md:w-5 md:h-5 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
         Back to Products
       </Link>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-6 md:gap-8">
         {/* Product Images Slider */}
         <div className="space-y-4">
           <div className="aspect-w-4 aspect-h-3 bg-gray-100 rounded-lg overflow-hidden relative">
@@ -181,7 +181,7 @@ function ProductDetail() {
                 )}`;
               })()}
               alt={product.title}
-              className="w-full h-[300px] object-contain mx-auto"
+              className="w-full h-64 sm:h-[300px] md:h-[400px] object-contain mx-auto"
               onError={(e) => {
                 e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
                   '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
@@ -296,9 +296,9 @@ function ProductDetail() {
         </div>
 
         {/* Product Info */}
-        <div className="space-y-6">
-          <h1 className="text-3xl font-bold text-primary">{product.title}</h1>
-          <p className="text-gray-600">{product.description}</p>
+        <div className="space-y-4 md:space-y-6">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary">{product.title}</h1>
+          <p className="text-sm md:text-base text-gray-600">{product.description}</p>
 
           <div className="space-y-2">
             <div className="flex items-baseline justify-between">
@@ -352,17 +352,17 @@ function ProductDetail() {
 
           {/* Warranty Information */}
           {product.warrantyInfo && (
-            <div className="flex items-center w-fit gap-2 bg-gradient-to-r from-green-400 to-green-600 text-white pl-3 pr-[25%] py-2 rounded-2xl">
-              <img width="25" height="25" src="https://img.icons8.com/dotty/80/security-checked.png" alt="security-checked" />
-              <span className="font-bold">{product.warrantyInfo}</span>
+            <div className="flex items-center w-full sm:w-fit gap-2 bg-gradient-to-r from-green-400 to-green-600 text-white pl-3 pr-4 md:pr-12 py-2 rounded-lg md:rounded-2xl shadow-sm">
+              <img width="20" height="20" src="https://img.icons8.com/dotty/80/security-checked.png" alt="security-checked" className="invert brightness-0" />
+              <span className="font-bold text-sm md:text-base">{product.warrantyInfo}</span>
             </div>
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-2">
             <button
               onClick={handleBuyNow}
-              className="flex-1 border-2 border-primary text-primary px-6 py-3 rounded-md hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2"
+              className="flex-1 border-2 border-primary text-primary px-6 py-3 rounded-md hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2 font-semibold"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -371,7 +371,7 @@ function ProductDetail() {
             </button>
             <button
               onClick={handleAddToCart}
-              className="flex-1 bg-primary text-white px-6 py-3 rounded-md hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
+              className="flex-1 bg-primary text-white px-6 py-3 rounded-md hover:bg-primary-dark transition-colors flex items-center justify-center gap-2 font-semibold shadow-md hover:shadow-lg"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
