@@ -166,7 +166,24 @@ function Products() {
             <Link to={`/product/${product.id}`} className="block relative">
               <div className="h-64 bg-gray-200 flex items-center justify-center">
                 <img
-                  src={product.images?.[0]?.preview ? `${API_BASE_URL.replace('/api', '')}${product.images[0].preview}` : `${API_BASE_URL.replace('/api', '')}${product.images?.[0]?.original}`}
+                  src={(() => {
+                    const img = product.images?.[0];
+                    const preview = img?.preview;
+                    const original = img?.original;
+                    const baseUrl = API_BASE_URL.replace('/api', '');
+                    if (preview) return `${baseUrl}${preview}`;
+                    if (original) return `${baseUrl}${original}`;
+                    return `${baseUrl}${product.images?.[0]?.original}`.includes('undefined') ? 'https://via.placeholder.com/300x300?text=No+Image' : `${baseUrl}${original}`; // Double check logic
+                  })() === 'undefined' ? 'https://via.placeholder.com/300x300?text=No+Image' : // Simplify:
+                    (() => {
+                      const img = product.images?.[0];
+                      const preview = img?.preview;
+                      const original = img?.original;
+                      const baseUrl = API_BASE_URL.replace('/api', '');
+                      if (preview) return `${baseUrl}${preview}`;
+                      if (original) return `${baseUrl}${original}`;
+                      return 'https://via.placeholder.com/300x300?text=No+Image';
+                    })()}
                   alt={product.name}
                   className="max-w-full max-h-full object-contain"
                   onError={(e) => {

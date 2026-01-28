@@ -7,10 +7,32 @@ import Toaster from '../components/toaster';
 import Loader from '../components/Loader';
 import { API_BASE_URL } from '../config/api';
 
-// ... (constants remain same)
+// Constants
+const isFurniture = (categories) => categories && (categories.includes('Furniture') || categories.includes('furniture'));
+const isCosmetic = (categories) => categories && (categories.includes('Cosmetics') || categories.includes('cosmetics'));
+const isPerfume = (categories) => categories && (categories.includes('Perfumes') || categories.includes('perfumes'));
+
+const furnitureColors = [
+  { name: 'Black', code: '#000000' },
+  { name: 'White', code: '#FFFFFF' },
+  { name: 'Brown', code: '#8B4513' },
+  { name: 'Gray', code: '#808080' }
+];
+
+const furnitureModels = ['Standard', 'Premium', 'Luxury'];
+
+const cosmeticColors = [
+  { name: 'Red', code: '#FF0000' },
+  { name: 'Pink', code: '#FFC0CB' },
+  { name: 'Nude', code: '#E6BE8A' }
+];
+
+const fragranceTypes = ['Floral', 'Woody', 'Fresh', 'Citrus'];
 
 function ProductDetail() {
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   // ... (other state)
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -25,7 +47,38 @@ function ProductDetail() {
 
   // ... (category checks remain same)
 
-  // ... (useEffects remain same)
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE_URL}/products/${id}`);
+        if (!response.ok) {
+          if (response.status === 404) throw new Error('Product not found');
+          throw new Error('Failed to load product');
+        }
+        const data = await response.json();
+        const prod = data.product || data.data;
+        if (!prod) throw new Error('Product data is missing');
+
+        setProduct({
+          ...prod,
+          description: typeof prod.description === 'object' ? JSON.stringify(prod.description) : (prod.description || '')
+        });
+
+        // Fetch related/similar products if needed (simple implementation)
+        // const relatedRes = await fetch(`${API_BASE_URL}/products?limit=4`);
+      } catch (err) {
+        console.error("Error fetching product:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
 
   const handleBuyNow = () => {
     if (!product) return;
@@ -116,7 +169,15 @@ function ProductDetail() {
         <div className="space-y-4">
           <div className="aspect-w-4 aspect-h-3 bg-gray-100 rounded-lg overflow-hidden relative">
             <img
-              src={product.images?.[currentImageIndex]?.preview ? `${API_BASE_URL.replace('/api', '')}${product.images[currentImageIndex].preview}` : (product.images?.[currentImageIndex]?.original ? `${API_BASE_URL.replace('/api', '')}${product.images[currentImageIndex].original}` : 'https://via.placeholder.com/300x300?text=No+Image')}
+              src={(() => {
+                const img = product.images?.[currentImageIndex];
+                const preview = img?.preview;
+                const original = img?.original;
+                const baseUrl = API_BASE_URL.replace('/api', '');
+                if (preview) return `${baseUrl}${preview}`;
+                if (original) return `${baseUrl}${original}`;
+                return 'https://via.placeholder.com/300x300?text=No+Image';
+              })()}
               alt={product.title}
               className="w-full h-[300px] object-contain mx-auto"
               onError={(e) => { e.target.src = 'https://via.placeholder.com/300x300?text=No+Image'; }}
@@ -189,7 +250,15 @@ function ProductDetail() {
                     }`}
                 >
                   <img
-                    src={image?.thumbnail ? `${API_BASE_URL.replace('/api', '')}${image.thumbnail}` : 'https://via.placeholder.com/80x80?text=No+Image'}
+                    src={(() => {
+                      const img = image;
+                      const thumb = img?.thumbnail;
+                      const preview = img?.preview;
+                      const baseUrl = API_BASE_URL.replace('/api', '');
+                      if (thumb) return `${baseUrl}${thumb}`;
+                      if (preview) return `${baseUrl}${preview}`;
+                      return 'https://via.placeholder.com/80x80?text=No+Image';
+                    })()}
                     alt={`${product.title} ${index + 1}`}
                     className="w-full h-full object-cover"
                     onError={(e) => { e.target.src = 'https://via.placeholder.com/80x80?text=No+Image'; }}
@@ -391,7 +460,15 @@ function ProductDetail() {
                 <Link to={`/product/${relatedProduct.id}`} className="block relative">
                   <div className="h-48 bg-gray-200 flex items-center justify-center">
                     <img
-                      src={relatedProduct.images?.[0]?.preview ? `${API_BASE_URL.replace('/api', '')}${relatedProduct.images[0].preview}` : (relatedProduct.images?.[0]?.original ? `${API_BASE_URL.replace('/api', '')}${relatedProduct.images[0].original}` : 'https://via.placeholder.com/300x300?text=No+Image')}
+                      src={(() => {
+                        const img = relatedProduct.images?.[0];
+                        const preview = img?.preview;
+                        const original = img?.original;
+                        const baseUrl = API_BASE_URL.replace('/api', '');
+                        if (preview) return `${baseUrl}${preview}`;
+                        if (original) return `${baseUrl}${original}`;
+                        return 'https://via.placeholder.com/300x300?text=No+Image';
+                      })()}
                       alt={relatedProduct.title}
                       className="max-w-full max-h-full object-contain"
                       onError={(e) => { e.target.src = 'https://via.placeholder.com/300x300?text=No+Image'; }}
