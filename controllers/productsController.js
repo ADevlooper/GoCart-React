@@ -665,17 +665,21 @@ export const updateProduct = async (req, res) => {
     // Update categories
     if (categoryArray) {
       await db.delete(productCategories).where(eq(productCategories.productId, id));
-      await db.insert(productCategories).values(
-        categoryArray.map((c) => ({ productId: id, categoryId: Number(c) }))
-      );
+      if (categoryArray.length > 0) {
+        await db.insert(productCategories).values(
+          categoryArray.map((c) => ({ productId: id, categoryId: Number(c) }))
+        );
+      }
     }
 
     // Update tags
     if (tagArray) {
       await db.delete(productTags).where(eq(productTags.productId, id));
-      await db.insert(productTags).values(
-        tagArray.map((t) => ({ productId: id, tagId: Number(t) }))
-      );
+      if (tagArray.length > 0) {
+        await db.insert(productTags).values(
+          tagArray.map((t) => ({ productId: id, tagId: Number(t) }))
+        );
+      }
     }
 
     // Handle Image Deletions
