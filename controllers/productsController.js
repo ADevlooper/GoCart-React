@@ -666,9 +666,12 @@ export const updateProduct = async (req, res) => {
     if (categoryArray) {
       await db.delete(productCategories).where(eq(productCategories.productId, id));
       if (categoryArray.length > 0) {
-        await db.insert(productCategories).values(
-          categoryArray.map((c) => ({ productId: id, categoryId: Number(c) }))
-        );
+        const validIds = categoryArray.map(c => Number(c)).filter(id => id > 0);
+        if (validIds.length > 0) {
+          await db.insert(productCategories).values(
+            validIds.map((cid) => ({ productId: id, categoryId: cid }))
+          );
+        }
       }
     }
 
@@ -676,9 +679,12 @@ export const updateProduct = async (req, res) => {
     if (tagArray) {
       await db.delete(productTags).where(eq(productTags.productId, id));
       if (tagArray.length > 0) {
-        await db.insert(productTags).values(
-          tagArray.map((t) => ({ productId: id, tagId: Number(t) }))
-        );
+        const validIds = tagArray.map(t => Number(t)).filter(id => id > 0);
+        if (validIds.length > 0) {
+          await db.insert(productTags).values(
+            validIds.map((tid) => ({ productId: id, tagId: tid }))
+          );
+        }
       }
     }
 
