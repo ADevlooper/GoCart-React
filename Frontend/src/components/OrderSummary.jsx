@@ -1,4 +1,5 @@
 import React from 'react';
+import ProductImage from './ProductImage';
 
 const OrderSummary = ({ cart, summary, voucherDiscount, selectedAddress, paymentMethod, isOrder = false, order }) => {
   const items = isOrder ? order.items : cart;
@@ -65,8 +66,8 @@ const OrderSummary = ({ cart, summary, voucherDiscount, selectedAddress, payment
                 <td className="py-4 px-2">
                   <div className="flex items-center gap-4">
                     {!isOrder && (
-                      <img
-                        src={item.thumbnail}
+                      <ProductImage
+                        product={item}
                         alt={item.title}
                         className="w-16 h-16 object-cover rounded"
                       />

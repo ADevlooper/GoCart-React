@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Toaster from './toaster';
 import Loader from './Loader';
 import { API_BASE_URL } from '../config/api';
+import ProductImage from '../components/ProductImage';
 
 function DealsForYou() {
   const [products, setProducts] = useState([]);
@@ -26,7 +27,7 @@ function DealsForYou() {
         const mappedProducts = data.map(product => ({
           ...product,
           title: product.name,
-          thumbnail: product.images?.[0]?.thumbnail ? `${API_BASE_URL.replace('/api', '')}${product.images[0].thumbnail}` : 'https://via.placeholder.com/150',
+          thumbnail: product.images?.[0]?.thumbnail,
           discountPercentage: product.discount
         }));
         // Filter products with highest discount (top 10)
@@ -79,8 +80,9 @@ function DealsForYou() {
           <div key={product.id} className="flex-shrink-0 w-64 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
             <Link to={`/product/${product.id}`} className="block relative">
               <div className="h-48 bg-gray-200 flex items-center justify-center">
-                <img
+                <ProductImage
                   src={product.thumbnail}
+                  product={product}
                   alt={product.title}
                   className="max-w-full max-h-full object-contain"
                 />

@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AsideMenu, { LayoutPanelLeftIcon } from '../components/AsideMenu';
 import OrderFilters from '../components/OrderFilters';
 import Toaster from '../components/toaster';
+import ProductImage from '../components/ProductImage';
 
 import AddressList from '../components/AddressList';
 import jsPDF from 'jspdf';
@@ -70,7 +71,7 @@ const Account = () => {
   const wishlistProducts = uniqueWishlistItems.map(item => ({
     ...item,
     title: item.title || item.name,
-    thumbnail: item.image ? (item.image.startsWith('http') ? item.image : `${API_BASE_URL.replace('/api', '')}${item.image}`) : 'https://via.placeholder.com/150'
+    thumbnail: item.image || item.thumbnail
   }));
 
   const dispatch = useDispatch();
@@ -679,8 +680,9 @@ const Account = () => {
                 {wishlistProducts.map((product) => (
                   <div key={product.id || product.productId} className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/product/${product.id || product.productId}`)}>
                     <div className="flex items-start gap-4">
-                      <img
+                      <ProductImage
                         src={product.thumbnail}
+                        product={product}
                         alt={product.title}
                         className="w-16 h-16 object-contain rounded"
                       />
@@ -728,11 +730,10 @@ const Account = () => {
               <div className="space-y-4">
                 {cart.map((item) => (
                   <div key={item.id} className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg">
-                    <img
-                      src={item.images?.[0]?.thumbnail ? `${API_BASE_URL.replace('/api', '')}${item.images[0].thumbnail}` : (item.images?.[0]?.preview ? `${API_BASE_URL.replace('/api', '')}${item.images[0].preview}` : 'https://via.placeholder.com/80x80?text=No+Image')}
+                    <ProductImage
+                      product={item}
                       alt={item.title}
                       className="w-16 h-16 object-contain rounded border border-gray-200"
-                      onError={(e) => { e.target.src = 'https://via.placeholder.com/80x80?text=No+Image'; }}
                     />
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-900">{item.title}</h3>
@@ -1333,8 +1334,8 @@ const Account = () => {
                 <div className="space-y-3">
                   {selectedOrder.items.map((item, index) => (
                     <div key={index} className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg">
-                      <img
-                        src={item.thumbnail || 'https://via.placeholder.com/64'}
+                      <ProductImage
+                        src={item.thumbnail}
                         alt={item.title}
                         className="w-16 h-16 object-contain rounded border border-gray-200"
                       />

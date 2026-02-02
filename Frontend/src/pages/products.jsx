@@ -9,6 +9,7 @@ import SearchBox from '../components/SearchBox';
 import Shortlist from '../components/Shortlist';
 import Filters from '../components/Filters';
 import { API_BASE_URL } from '../config/api';
+import ProductImage from '../components/ProductImage';
 
 // Component for conditionally scrolling titles
 const ScrollingTitle = ({ title, isScrolling }) => {
@@ -165,32 +166,10 @@ function Products() {
           <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full mx-auto flex flex-col h-full">
             <Link to={`/product/${product.id}`} className="block relative grow">
               <div className="h-48 sm:h-56 md:h-64 bg-gray-200 flex items-center justify-center">
-                <img
-                  src={(() => {
-                    const img = product.images?.[0];
-                    const preview = img?.preview;
-                    const original = img?.original;
-                    const baseUrl = API_BASE_URL.replace('/api', '');
-                    if (preview) return `${baseUrl}${preview}`;
-                    if (original) return `${baseUrl}${original}`;
-                    return `${baseUrl}${product.images?.[0]?.original}`.includes('undefined') ? 'https://via.placeholder.com/300x300?text=No+Image' : `${baseUrl}${original}`;
-                  })() === 'undefined' ? 'https://via.placeholder.com/300x300?text=No+Image' :
-                    (() => {
-                      const img = product.images?.[0];
-                      const preview = img?.preview;
-                      const original = img?.original;
-                      const baseUrl = API_BASE_URL.replace('/api', '');
-                      if (preview) return `${baseUrl}${preview}`;
-                      if (original) return `${baseUrl}${original}`;
-                      return 'https://via.placeholder.com/300x300?text=No+Image';
-                    })()}
+                <ProductImage
+                  product={product}
                   alt={product.name}
                   className="w-full h-full object-contain p-4"
-                  onError={(e) => {
-                    e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
-                      '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
-                    )}`;
-                  }}
                 />
 
                 {product.discount >= 5 && (

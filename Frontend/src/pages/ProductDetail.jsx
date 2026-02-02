@@ -6,6 +6,7 @@ import { toggleWishlist, toggleWishlistAsync, selectWishlist } from '../redux/wi
 import Toaster from '../components/toaster';
 import Loader from '../components/Loader';
 import { API_BASE_URL } from '../config/api';
+import ProductImage from '../components/ProductImage';
 
 // Constants
 const isFurniture = (categories) => categories && (categories.includes('Furniture') || categories.includes('furniture'));
@@ -168,25 +169,10 @@ function ProductDetail() {
         {/* Product Images Slider */}
         <div className="space-y-4">
           <div className="aspect-w-4 aspect-h-3 bg-gray-100 rounded-lg overflow-hidden relative">
-            <img
-              src={(() => {
-                const img = product.images?.[currentImageIndex];
-                const preview = img?.preview;
-                const original = img?.original;
-                const baseUrl = API_BASE_URL.replace('/api', '');
-                if (preview) return `${baseUrl}${preview}`;
-                if (original) return `${baseUrl}${original}`;
-                return `data:image/svg+xml;utf8,${encodeURIComponent(
-                  '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
-                )}`;
-              })()}
+            <ProductImage
+              src={product.images?.[currentImageIndex]}
               alt={product.title}
               className="w-full h-64 sm:h-[300px] md:h-[400px] object-contain mx-auto"
-              onError={(e) => {
-                e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
-                  '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
-                )}`;
-              }}
             />
 
             {/* Wishlist Button */}
@@ -255,25 +241,11 @@ function ProductDetail() {
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-200 ${index === currentImageIndex ? 'border-red-800' : 'border-gray-200 hover:border-red-400'
                     }`}
                 >
-                  <img
-                    src={(() => {
-                      const img = image;
-                      const thumb = img?.thumbnail;
-                      const preview = img?.preview;
-                      const baseUrl = API_BASE_URL.replace('/api', '');
-                      if (thumb) return `${baseUrl}${thumb}`;
-                      if (preview) return `${baseUrl}${preview}`;
-                      return `data:image/svg+xml;utf8,${encodeURIComponent(
-                        '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="10">No Image</text></svg>'
-                      )}`;
-                    })()}
+                  <ProductImage
+                    src={image}
                     alt={`${product.title} ${index + 1}`}
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
-                        '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="10">No Image</text></svg>'
-                      )}`;
-                    }}
+                    fallbackIconSize={16}
                   />
                 </button>
               ))}
@@ -471,25 +443,9 @@ function ProductDetail() {
               <div key={relatedProduct.id} className="flex-shrink-0 w-64 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 <Link to={`/product/${relatedProduct.id}`} className="block relative">
                   <div className="h-48 bg-gray-200 flex items-center justify-center">
-                    <img
-                      src={(() => {
-                        const img = relatedProduct.images?.[0];
-                        const preview = img?.preview;
-                        const original = img?.original;
-                        const baseUrl = API_BASE_URL.replace('/api', '');
-                        if (preview) return `${baseUrl}${preview}`;
-                        if (original) return `${baseUrl}${original}`;
-                        return `data:image/svg+xml;utf8,${encodeURIComponent(
-                          '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
-                        )}`;
-                      })()}
-                      alt={relatedProduct.title}
+                    <ProductImage
+                      product={relatedProduct}
                       className="max-w-full max-h-full object-contain"
-                      onError={(e) => {
-                        e.target.src = `data:image/svg+xml;utf8,${encodeURIComponent(
-                          '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="18">No Image</text></svg>'
-                        )}`;
-                      }}
                     />
 
                     {/* Offer Tag */}

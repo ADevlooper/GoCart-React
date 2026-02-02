@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectCartItems, selectOrderSummary, removeFromCart, updateQuantity } from '../redux/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import DeleteButton from './DeleteButton';
+import ProductImage from './ProductImage';
 
 function CartSidebar() {
   const dispatch = useDispatch();
@@ -20,8 +21,8 @@ function CartSidebar() {
           <div className="max-h-64 overflow-y-auto">
             {cart.map(item => (
               <div key={item.id} className="flex items-center gap-2 border-b pb-2 mb-2">
-                <img
-                  src={item.thumbnail}
+                <ProductImage
+                  product={item}
                   alt={item.title}
                   className="w-12 h-12 object-cover rounded"
                 />

@@ -4,7 +4,9 @@ import { selectCartItems, removeFromCart, updateQuantity, removeFromCartAsync, u
 import { Link, useNavigate } from 'react-router-dom';
 import Toaster from '../components/toaster';
 import DeleteButton from '../components/DeleteButton';
+import DeleteButton from '../components/DeleteButton';
 import { API_BASE_URL } from '../config/api';
+import ProductImage from '../components/ProductImage';
 
 function Cart() {
   const cart = useSelector(selectCartItems);
@@ -68,11 +70,10 @@ function Cart() {
                     <DeleteButton
                       onClick={() => handleRemoveItem(item)}
                     />
-                    <img
-                      src={item.thumbnail ? (item.thumbnail.startsWith('http') ? item.thumbnail : `${API_BASE_URL.replace('/api', '')}${item.thumbnail}`) : 'https://via.placeholder.com/80x80?text=No+Image'}
+                    <ProductImage
+                      product={item}
                       alt={item.name}
                       className="w-16 h-25 object-cover rounded flex-shrink-0"
-                      onError={(e) => { e.target.src = 'https://via.placeholder.com/80x80?text=No+Image'; }}
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start">

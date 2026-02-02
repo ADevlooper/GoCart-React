@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../config/api';
 import Toaster from '../components/toaster';
+
 import { X, Upload, Edit, Trash2, Eye } from 'lucide-react';
+import ProductImage from '../components/ProductImage';
+
+
+
 
 const AdminProducts = () => {
     const [products, setProducts] = useState([]);
@@ -302,9 +307,9 @@ const AdminProducts = () => {
                             {viewProduct.images && viewProduct.images.length > 0 && (
                                 <div className="flex gap-4 overflow-x-auto pb-4">
                                     {viewProduct.images.map((img, idx) => (
-                                        <img
+                                        <ProductImage
                                             key={idx}
-                                            src={`${API_BASE_URL.replace('/api', '')}${img.preview}`}
+                                            src={img.preview || img}
                                             alt={viewProduct.title}
                                             className="h-48 w-auto object-cover rounded shadow"
                                         />
@@ -480,8 +485,8 @@ const AdminProducts = () => {
                                                 .filter((img) => !deletedImageIds.includes(img.id))
                                                 .map((img) => (
                                                     <div key={img.id} className="relative group">
-                                                        <img
-                                                            src={`${API_BASE_URL.replace('/api', '')}${img.preview}`}
+                                                        <ProductImage
+                                                            src={img.preview || img}
                                                             alt="Product"
                                                             className="w-24 h-24 object-cover rounded border border-gray-200"
                                                         />
@@ -505,7 +510,7 @@ const AdminProducts = () => {
                                         <div className="flex flex-wrap gap-4">
                                             {newImagePreviews.map((src, index) => (
                                                 <div key={index} className="relative group">
-                                                    <img
+                                                    <ProductImage
                                                         src={src}
                                                         alt="New upload"
                                                         className="w-24 h-24 object-cover rounded border border-gray-200"
@@ -584,23 +589,9 @@ const AdminProducts = () => {
                         {filteredProducts.map((product) => (
                             <tr key={product.id}>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <img
-                                        src={(() => {
-                                            if (!product.images || product.images.length === 0) return 'https://via.placeholder.com/40';
-                                            const img = product.images[0];
-                                            const url = img.thumbnail || img.preview || img.original || (typeof img === 'string' ? img : null);
-                                            if (!url) return 'https://via.placeholder.com/40';
-                                            if (url.startsWith('http')) return url;
-                                            // Ensure correct base URL concatenation
-                                            const baseUrl = API_BASE_URL.replace('/api', '');
-                                            // Avoid double slash
-                                            const cleanUrl = url.startsWith('/') ? url : `/${url}`;
-                                            return `${baseUrl}${cleanUrl}`;
-                                        })()}
-                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/40'; }}
-                                        alt={product.title}
-                                        className="w-10 h-10 object-cover rounded-full border border-gray-200 shadow-sm"
-                                    />
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <ProductImage product={product} className="w-10 h-10 object-cover rounded-full border border-gray-200 shadow-sm" fallbackIconSize={18} />
+                                    </td>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm font-medium text-gray-900">{product.title}</div>
