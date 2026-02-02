@@ -2,15 +2,20 @@ import multer from "multer";
 import sharp from "sharp";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT_DIR = path.join(__dirname, "..");
 
 // ensure folders exist
 const ensureDirs = () => {
   const folders = [
-    path.join(process.cwd(), "uploads"),
-    path.join(process.cwd(), "uploads", "temp"),
-    path.join(process.cwd(), "uploads", "original"),
-    path.join(process.cwd(), "uploads", "preview"),
-    path.join(process.cwd(), "uploads", "thumb"),
+    path.join(ROOT_DIR, "uploads"),
+    path.join(ROOT_DIR, "uploads", "temp"),
+    path.join(ROOT_DIR, "uploads", "original"),
+    path.join(ROOT_DIR, "uploads", "preview"),
+    path.join(ROOT_DIR, "uploads", "thumb"),
   ];
   for (const f of folders) {
     if (!fs.existsSync(f)) fs.mkdirSync(f, { recursive: true });
@@ -21,7 +26,7 @@ ensureDirs();
 // multer storage (keeps extension!)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(process.cwd(), "uploads", "temp"));
+    cb(null, path.join(ROOT_DIR, "uploads", "temp"));
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
@@ -74,9 +79,9 @@ export const processImages = async (req, res, next) => {
       const previewName = `${baseName}-preview.jpg`;
       const thumbName = `${baseName}-thumb.jpg`;
 
-      const originalPath = path.join(process.cwd(), "uploads", "original", originalName);
-      const previewPath = path.join(process.cwd(), "uploads", "preview", previewName);
-      const thumbPath = path.join(process.cwd(), "uploads", "thumb", thumbName);
+      const originalPath = path.join(ROOT_DIR, "uploads", "original", originalName);
+      const previewPath = path.join(ROOT_DIR, "uploads", "preview", previewName);
+      const thumbPath = path.join(ROOT_DIR, "uploads", "thumb", thumbName);
 
       // Use sharp to read the temp file and write the outputs.
       // We convert outputs to JPEG to avoid format inconsistencies.

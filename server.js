@@ -13,7 +13,12 @@ import ordersRoutes from "./routes/ordersRoutes.js";
 dotenv.config();
 const app = express();
 
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 import cookieParser from "cookie-parser";
 
 // CORS
