@@ -4,7 +4,7 @@ import { selectCartItems, removeFromCart, updateQuantity, removeFromCartAsync, u
 import { Link, useNavigate } from 'react-router-dom';
 import Toaster from '../components/toaster';
 import DeleteButton from '../components/DeleteButton';
-import DeleteButton from '../components/DeleteButton';
+
 import { API_BASE_URL } from '../config/api';
 import ProductImage from '../components/ProductImage';
 
