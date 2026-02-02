@@ -169,7 +169,7 @@ function Products() {
                 <ProductImage
                   product={product}
                   alt={product.name}
-                  className="w-full h-full object-contain p-4"
+                  className="w-full h-full object-cover p-4"
                 />
 
                 {product.discount >= 5 && (

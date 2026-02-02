@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, addToCartAsync } from '../redux/cartSlice';
@@ -45,6 +45,23 @@ function ProductDetail() {
   const dispatch = useDispatch();
   const wishlist = useSelector(selectWishlist);
   const { currentUser } = useSelector((state) => state.auth);
+
+  // Filter unique images to prevent duplicates (handling potential legacy data issues)
+  const uniqueImages = useMemo(() => {
+    if (!product?.images) return [];
+
+    // Use a Set to track unique image identifiers (by original, preview, or entire string)
+    const seen = new Set();
+    return product.images.filter(img => {
+      // Get a unique key for the image
+      const key = typeof img === 'string' ? img : (img.original || img.preview || img.thumbnail);
+
+      if (!key || seen.has(key)) return false;
+
+      seen.add(key);
+      return true;
+    });
+  }, [product]);
 
   // ... (category checks remain same)
 
@@ -170,9 +187,9 @@ function ProductDetail() {
         <div className="space-y-4">
           <div className="aspect-w-4 aspect-h-3 bg-gray-100 rounded-lg overflow-hidden relative">
             <ProductImage
-              src={product.images?.[currentImageIndex]}
+              src={uniqueImages?.[currentImageIndex]}
               alt={product.title}
-              className="w-full h-64 sm:h-[300px] md:h-[400px] object-contain mx-auto"
+              className="w-full h-64 sm:h-[300px] md:h-[400px] object-cover mx-auto"
             />
 
             {/* Wishlist Button */}
@@ -209,7 +226,7 @@ function ProductDetail() {
             )}
 
             {/* Navigation Arrows */}
-            {product.images.length > 1 && (
+            {uniqueImages.length > 1 && (
               <>
                 <button
                   onClick={prevImage}
@@ -232,9 +249,9 @@ function ProductDetail() {
           </div>
 
           {/* Thumbnail Images */}
-          {product.images?.length > 1 && (
+          {uniqueImages?.length > 1 && (
             <div className="flex gap-2 overflow-x-auto">
-              {product.images.map((image, index) => (
+              {uniqueImages.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => goToImage(index)}
@@ -253,9 +270,9 @@ function ProductDetail() {
           )}
 
           {/* Image Dots Indicator */}
-          {product.images.length > 1 && (
+          {uniqueImages.length > 1 && (
             <div className="flex justify-center gap-2">
-              {product.images.map((_, index) => (
+              {uniqueImages.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToImage(index)}
