@@ -717,6 +717,7 @@ export const deleteProduct = async (req, res) => {
     await db.delete(productImages).where(eq(productImages.productId, id));
     await db.delete(productCategories).where(eq(productCategories.productId, id));
     await db.delete(productTags).where(eq(productTags.productId, id));
+    await db.delete(wishlist).where(eq(wishlist.productId, id));
     await db.delete(products).where(eq(products.id, id));
 
     return res.json({ success: true, message: "Product deleted" });
