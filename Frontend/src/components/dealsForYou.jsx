@@ -84,7 +84,7 @@ function DealsForYou() {
                   src={product.thumbnail}
                   product={product}
                   alt={product.title}
-                  className="max-w-full max-h-full object-contain"
+                  className="w-full h-full object-cover"
                 />
                 <span className="absolute top-2 left-2 bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded">
                   {Math.floor(product.discountPercentage)}% OFF
