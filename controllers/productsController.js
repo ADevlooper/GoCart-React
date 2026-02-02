@@ -643,6 +643,7 @@ export const updateProduct = async (req, res) => {
     const updateData = { ...body };
     delete updateData.categoryIds;
     delete updateData.tags;
+    delete updateData.deletedImageIds;
 
     const [updated] = await db
       .update(products)

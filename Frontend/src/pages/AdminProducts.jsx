@@ -170,8 +170,10 @@ const AdminProducts = () => {
                 resetForm();
                 loadProducts();
                 setIsFormVisible(false);
+                setIsFormVisible(false);
             } else {
-                showToaster('Failed to save product');
+                const data = await res.json();
+                showToaster(data.message || 'Failed to save product');
             }
         } catch (error) {
             showToaster('Error saving product');
@@ -229,6 +231,7 @@ const AdminProducts = () => {
             setNewImagePreviews([]);
 
             setIsFormVisible(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (error) {
             showToaster('Error loading product');
         }
@@ -282,7 +285,11 @@ const AdminProducts = () => {
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-gray-800">Products</h2>
                 <button
-                    onClick={() => { resetForm(); setIsFormVisible(true); }}
+                    onClick={() => {
+                        resetForm();
+                        setIsFormVisible(true);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
                     Add Product
