@@ -640,10 +640,18 @@ export const updateProduct = async (req, res) => {
     const categoryArray = body.categoryIds ? JSON.parse(body.categoryIds) : null;
     const tagArray = body.tags ? JSON.parse(body.tags) : null;
 
-    const updateData = { ...body };
-    delete updateData.categoryIds;
-    delete updateData.tags;
-    delete updateData.deletedImageIds;
+    const updateData = {};
+    if (body.title) updateData.title = body.title;
+    if (body.description) updateData.description = body.description;
+    if (body.price) updateData.price = String(body.price);
+    if (body.discount) updateData.discount = String(body.discount);
+    if (body.stock) updateData.stock = Number(body.stock);
+    if (body.availableStock) updateData.availableStock = Number(body.availableStock);
+    if (body.brand !== undefined) updateData.brand = body.brand;
+    if (body.warrantyInfo !== undefined) updateData.warrantyInfo = body.warrantyInfo;
+
+    // Auto-update timestamp
+    updateData.updatedAt = new Date();
 
     const [updated] = await db
       .update(products)
@@ -704,7 +712,7 @@ export const updateProduct = async (req, res) => {
     return res.json({ success: true, message: "Product updated", data: updated });
   } catch (error) {
     console.error("Update Product Error:", error);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
